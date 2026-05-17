@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Электронный сборник | Математика движения в пространстве | ЖД кейсы</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', 'Roboto', 'Times New Roman', serif;
+      background: #eef2f7;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
+    .book {
+      max-width: 1100px;
+      width: 100%;
+      background: white;
+      border-radius: 28px;
+      box-shadow: 0 25px 45px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+    }
+    .page {
+      display: none;
+      padding: 30px 35px;
+      animation: fade 0.25s ease;
+      min-height: 600px;
+    }
+    .page.active {
+      display: block;
+    }
+    @keyframes fade {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    h1 {
+      font-size: 1.9rem;
+      color: #003057;
+      border-left: 6px solid #f39c12;
+      padding-left: 20px;
+      margin-bottom: 10px;
+    }
+    h2 {
+      font-size: 1.6rem;
+      color: #004b6e;
+      border-bottom: 3px solid #f39c12;
+      display: inline-block;
+      margin: 20px 0 15px;
+      padding-bottom: 5px;
+    }
+    h3 {
+      font-size: 1.3rem;
+      background: #eef2f7;
+      padding: 6px 15px;
+      border-radius: 30px;
+      margin: 20px 0 10px;
+    }
+    .definition-box {
+      background: #eef2fa;
+      border-left: 5px solid #f39c12;
+      padding: 12px 20px;
+      margin: 15px 0;
+      border-radius: 16px;
+    }
+    .definition-term {
+      font-weight: bold;
+      color: #003057;
+    }
+    .formula-box {
+      background: #f8f5e8;
+      border-left: 5px solid #004b6e;
+      padding: 12px 20px;
+      margin: 15px 0;
+      border-radius: 16px;
+      font-family: monospace;
+    }
+    .task {
+      background: #f9fbfe;
+      border-left: 5px solid #0077be;
+      margin: 18px 0;
+      padding: 14px 20px;
+      border-radius: 18px;
+      transition: 0.2s;
+    }
+    .task:hover {
+      background: #fef5e6;
+    }
+    .solution-btn {
+      background: #2c7a2c;
+      color: white;
+      border: none;
+      padding: 5px 15px;
+      border-radius: 40px;
+      margin-top: 10px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: 0.2s;
+    }
+    .solution-btn:hover {
+      background: #1d5e1d;
+    }
+    .solution {
+      background: #e9f3e9;
+      border-left: 4px solid #2c7a2c;
+      margin-top: 12px;
+      padding: 10px 15px;
+      border-radius: 16px;
+      font-family: monospace;
+      display: none;
+    }
+    .solution.show {
+      display: block;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 18px 0;
+    }
+    th, td {
+      border: 1px solid #bdc4d0;
+      padding: 8px 10px;
+      text-align: center;
+    }
+    th {
+      background: #004b6e;
+      color: white;
+    }
+    .pagination {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 15px;
+      background: #f0f4f9;
+      border-top: 1px solid #cdd9ed;
+    }
+    .page-btn {
+      background: white;
+      border: 1px solid #bbb;
+      padding: 5px 12px;
+      border-radius: 30px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.1s;
+    }
+    .page-btn.active-page {
+      background: #003057;
+      color: white;
+      border-color: #003057;
+    }
+    canvas {
+      display: block;
+      margin: 20px auto;
+      background: #ffffff;
+      border-radius: 20px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+      width: 100%;
+      height: auto;
+      border: 1px solid #e0e7ef;
+    }
+    .fig-title {
+      text-align: center;
+      font-style: italic;
+      margin-top: -10px;
+      margin-bottom: 20px;
+      font-size: 0.85rem;
+      color: #2c5a6e;
+    }
+    footer {
+      text-align: center;
+      font-size: 0.75rem;
+      color: #6b7e8f;
+      margin-top: 25px;
+      padding-top: 15px;
+
+border-top: 1px solid #dce5ef;
+    }
+    .ref-note {
+      background: #fff7e0;
+      padding: 12px;
+      border-radius: 16px;
+      margin: 15px 0;
+    }
+    .page-number {
+      text-align: right;
+      font-size: 0.75rem;
+      color: #888;
+      margin-top: 20px;
+    }
+    @media (max-width: 700px) {
+      .page {
+        padding: 18px;
+      }
+      h1 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="book">
+  <!-- ========== СТРАНИЦА 1: ТЕОРЕТИЧЕСКОЕ ВВЕДЕНИЕ (определения + формулы) ========== -->
+  <div class="page active" id="page1">
+    <h1>📐  Математика движения в пространстве<br><span style="font-size:1rem;">Железнодорожные кейсы — сборник задач</span></h1>
+    <p><strong>Автор проекта:</strong> Эстерлейн Лилия<br>
+    <strong>Дисциплина:</strong> Математика | <strong>Назначение:</strong> для студентов ЖД специальностей и преподавателей</p>
+    
+    <h2>📘  Теоретическое введение</h2>
+    
+    <h3>1. Определения основных понятий</h3>
+    
+    <div class="definition-box">
+      <span class="definition-term">Вектор-функция</span> — функция, значениями которой являются векторы. Положение поезда в пространстве описывается вектор-функцией <strong>r(t) = (x(t), y(t), z(t))</strong>, где t — время.
+    </div>
+    
+    <div class="definition-box">
+      <span class="definition-term">Параметрическая кривая</span> — множество точек, координаты которых задаются функциями от одного параметра (например, времени t или длины дуги s). Железнодорожный путь представляется в виде <strong>(x(s), y(s), z(s))</strong>.
+    </div>
+    
+    <div class="definition-box">
+      <span class="definition-term">Кривизна кривой</span> — мера отклонения кривой от прямой линии. Обозначается <strong>k</strong> и вычисляется как <strong>k = |d²r/ds²|</strong>. Для окружности <strong>k = 1/R</strong>, где R — радиус.
+    </div>
+    
+    <div class="definition-box">
+      <span class="definition-term">Радиус кривизны</span> — величина, обратная кривизне: <strong>R = 1/k</strong>. Характеризует крутизну поворота пути (чем меньше R, тем круче поворот).
+    </div>
+    
+    <div class="definition-box">
+      <span class="definition-term">Центростремительное (нормальное) ускорение</span> — составляющая ускорения, характеризующая изменение направления скорости. Вычисляется по формуле <strong>a_n = v² / R</strong>.
+    </div>
+    
+    <div class="definition-box">
+      <span class="definition-term">Возвышение наружного рельса</span> — разность уровней наружного и внутреннего рельсов в кривой, обозначается <strong>h</strong> (мм). Создаёт наклон пути для компенсации центробежной силы.
+    </div>
+    
+    <div class="definition-box">
+      <span class="definition-term">Клотоида (радиоидальная спираль)</span> — кривая, у которой кривизна меняется линейно с длиной дуги. Используется в качестве переходной кривой на ЖД. Уравнение: <strong>R·L = A²</strong>, где A — параметр.
+    </div>
+    
+    <div class="definition-box">
+      <span class="definition-term">Матрица поворота</span> — линейное преобразование, поворачивающее векторы в плоскости на угол α: <strong>X' = R(α)·X</strong>, где R(α) = [[cosα, sinα], [-sinα, cosα]].
+    </div>
+    
+    <div class="definition-box">
+      <span class="definition-term">Эквивалентный уклон</span> — фиктивный уклон, создающий такое же сопротивление движению, как и кривая заданного радиуса: <strong>i_экв = 700 / R (‰)</strong>.
+    </div>
+    
+    <h3>2. Основные формулы</h3>
+    
+    <div class="formula-box">
+      <strong>Скорость (модуль):</strong> v = |dr/dt| = √((dx/dt)² + (dy/dt)² + (dz/dt)²)
+    </div>
+    
+    <div class="formula-box">
+      <strong>Центростремительное ускорение:</strong> a_n = v² / R
+    </div>
+    
+    <div class="formula-box">
+      <strong>Дополнительное сопротивление от кривой:</strong> W_кр = 700 / R (Н/т)
+    </div>
+    
+    <div class="formula-box">
+      <strong>Эквивалентный уклон:</strong> i_экв = 700 / R (‰)
+    </div>
+    
+    <div class="formula-box">
+
+<strong>Скорость полного гашения центробежного ускорения:</strong> v = √(g·R·h / S), где g=9,81 м/с², S=1520 мм (ширина колеи)
+    </div>
+    
+    <div class="formula-box">
+      <strong>Непогашенное ускорение:</strong> a_неп = v²/R – g·h/S
+    </div>
+    
+    <div class="formula-box">
+      <strong>Задача встречи поездов (равномерное движение):</strong> t_встр = L / (v₁ + v₂); s_встр = v₁·L / (v₁ + v₂)
+    </div>
+    
+    <div class="formula-box">
+      <strong>Уравнение клотоиды (переходная кривая):</strong> R·L = A² = const
+    </div>
+    
+    <div class="formula-box">
+      <strong>Матрица поворота на угол α:</strong> X' = [[cosα, sinα], [-sinα, cosα]] · X
+    </div>
+    
+    <div class="formula-box">
+      <strong>Уравнение движения поезда (дифференциальное):</strong> m·dv/dt = F_тяги – W_сопр – m·g·sinθ – B_торм
+    </div>
+    
+    <canvas id="figCoords" width="500" height="220" style="width:100%; max-width:500px; height:auto"></canvas>
+    <div class="fig-title">Рисунок 1 — Вектор-функция r(t) и система координат</div>
+    
+    <canvas id="figMeet" width="500" height="220" style="width:100%; max-width:500px; height:auto"></canvas>
+    <div class="fig-title">Рисунок 2 — График встречи поездов (пересечение линейных функций s₁(t) и s₂(t))</div>
+    
+    <footer>Теоретическая база для решения профессиональных задач ЖД</footer>
+    <div class="page-number">Страница 1 из 7</div>
+  </div>
+
+  <!-- ========== СТРАНИЦА 2: БАЗОВЫЙ УРОВЕНЬ (5 задач, 2 стр.) ========== -->
+  <div class="page" id="page2">
+    <h2>📘  Базовый уровень (5 простых задач)</h2>
+    <p><em>Задачи на прямое применение формул</em></p>
+    <div class="task"><strong>Б1.</strong> Перегон длиной 45 км. Пассажирский поезд идёт 90 км/ч, грузовой – 50 км/ч навстречу. Через сколько минут они встретятся? На каком расстоянии от начальной станции пассажирского поезда?
+      <button class="solution-btn" data-sol="sol1">Показать решение</button>
+      <div id="sol1" class="solution">t = L/(v₁+v₂) = 45/(90+50)=45/140=0,3214 ч = 19,29 мин. s = v₁·t = 90·0,3214 = 28,93 км.</div>
+    </div>
+    <div class="task"><strong>Б2.</strong> Товарный поезд длиной 600 м (60 км/ч), пассажирский 200 м (100 км/ч) навстречу. Время обгона (от встречи голов до расхождения хвостов)?
+      <button class="solution-btn" data-sol="sol2">Показать решение</button>
+      <div id="sol2" class="solution">Суммарная длина = 800 м = 0,8 км. Vотн=160 км/ч. t = 0,8/160 = 0,005 ч = 18 с.</div>
+    </div>
+    <div class="task"><strong>Б3.</strong> Поезд тормозит с a=0,6 м/с², v₀=72 км/ч. Тормозной путь до полной остановки?
+      <button class="solution-btn" data-sol="sol3">Показать решение</button>
+      <div id="sol3" class="solution">v₀=20 м/с. S = v₀²/(2a)=400/(2·0,6)=400/1,2≈333,3 м.</div>
+    </div>
+    <div class="task"><strong>Б4.</strong> Кривая R=500 м, v=60 км/ч. Центростремительное ускорение в м/с² и доля g?
+      <button class="solution-btn" data-sol="sol4">Показать решение</button>
+      <div id="sol4" class="solution">v=16,67 м/с. a_n=277,9/500=0,556 м/с² ≈0,057g.</div>
+    </div>
+    <div class="task"><strong>Б5.</strong> Подъём 10‰. Угол θ в градусах? Доп. сила для поезда 3000 т?
+      <button class="solution-btn" data-sol="sol5">Показать решение</button>
+      <div id="sol5" class="solution">sinθ≈0,01 → θ≈0,573°. F=3·10⁶·9,81·0,01=294 300 Н = 294,3 кН.</div>
+    </div>
+    <canvas id="figCurveBase" width="500" height="180" style="width:100%; max-width:500px"></canvas>
+    <div class="fig-title">Рисунок 3 — Геометрия кривой: радиус R, касательная τ, нормаль n</div>
+    <div class="page-number">Страница 2 из 7</div>
+  </div>
+
+  <!-- ========== СТРАНИЦА 3: СРЕДНИЙ УРОВЕНЬ (5 задач комбинированного типа, 3 стр.) ========== -->
+  <div class="page" id="page3">
+    <h2>📙  Средний уровень (5 задач комбинированного типа)</h2>
+    <p><em>Задачи, требующие комбинации нескольких формул</em></p>
+
+<div class="task"><strong>С1.</strong> R=600 м, h=100 мм, S=1520 мм. Скорость полного гашения. На сколько % меньше, чем при R=800 м (h то же)?
+      <button class="solution-btn" data-sol="solC1">Показать решение</button>
+      <div id="solC1" class="solution">v₁=√(9,81·600·0,1/1,52)=70,85 км/ч; v₂=√(9,81·800·0,1/1,52)=81,8 км/ч; разница (81,8-70,85)/81,8·100% = 13,4%.</div>
+    </div>
+    <div class="task"><strong>С2.</strong> Поезд 2000 т, R=400 м. W_кр=700/R. Доп. сила (кН) и i_экв?
+      <button class="solution-btn" data-sol="solC2">Показать решение</button>
+      <div id="solC2" class="solution">W_кр=700/400=1,75 Н/т. F_доп=2000·1,75=3500 Н=3,5 кН. i_экв=700/400=1,75‰.</div>
+    </div>
+    <div class="task"><strong>С3.</strong> Два поезда, разница 10 мин (80 и 100 км/ч). Через сколько км от станции второй догонит первого?
+      <button class="solution-btn" data-sol="solC3">Показать решение</button>
+      <div id="solC3" class="solution">За 10 мин (1/6 ч) первый уедет на 80/6≈13,33 км. Относительная скорость 20 км/ч. Время догона t=13,33/20=0,6665 ч. Расстояние = 100·0,6665≈66,65 км.</div>
+    </div>
+    <div class="task"><strong>С4.</strong> Перегон: 2 км подъём 5‰ (70 км/ч), 5 км прямо (70), 3 км спуск 4‰ (80). Общее время?
+      <button class="solution-btn" data-sol="solC4">Показать решение</button>
+      <div id="solC4" class="solution">t₁=2/70=0,02857 ч, t₂=5/70=0,07143 ч, t₃=3/80=0,0375 ч. Итого=0,1375 ч=8,25 мин.</div>
+    </div>
+    <div class="task"><strong>С5.</strong> R=1000 м, h=60 мм, a_неп ≤0,5 м/с². Максимальная скорость? (a_неп = v²/R – g·h/S)
+      <button class="solution-btn" data-sol="solC5">Показать решение</button>
+      <div id="solC5" class="solution">g·h/S = 9,81·0,06/1,52 = 0,387 м/с². Условие: v²/1000 – 0,387 ≤ 0,5 → v²/1000 ≤ 0,887 → v² ≤ 887 → v ≤ 29,78 м/с ≈ 107,2 км/ч.</div>
+    </div>
+    <canvas id="figSpeedRadius" width="500" height="220" style="width:100%; max-width:500px"></canvas>
+    <div class="fig-title">Рисунок 4 — Зависимость допустимой скорости от радиуса кривой (v ~ √R)</div>
+    <div class="page-number">Страница 3 из 7</div>
+  </div>
+
+  <!-- ========== СТРАНИЦА 4: ПРОДВИНУТЫЙ УРОВЕНЬ (5 задач с ДУ, 4 стр.) ========== -->
+  <div class="page" id="page4">
+    <h2>📕  Продвинутый уровень (5 задач с дифференциальными уравнениями)</h2>
+    <p><em>Задачи, требующие решения дифференциальных уравнений и методов оптимизации</em></p>
+    <div class="task"><strong>П1.</strong> Уравнение движения: m·dv/dt = F_тяги – W_сопр, W_сопр=2+0,01v² (Н/т), F_тяги=300 кН, m=1500 т. Найти установившуюся скорость (dv/dt=0).
+      <button class="solution-btn" data-sol="solP1">Показать решение</button>
+      <div id="solP1" class="solution">F_сопр = m·(2+0,01v²) = 1500·2 + 1500·0,01v² = 3000 + 15v² (Н). Уравнение: 300000 = 3000+15v² → 297000=15v² → v²=19800 → v≈140,7 м/с (506 км/ч — при пересчёте для v в км/ч получается ~130 км/ч).</div>
+    </div>
+    <div class="task"><strong>П2.</strong> Переходная кривая (клотоида): R·L = A². На входе R=∞, на выходе R=600 м, L=120 м. Найти A и радиус в середине.
+      <button class="solution-btn" data-sol="solP2">Показать решение</button>
+      <div id="solP2" class="solution">A² = R·L = 600·120 = 72000 → A = √72000 ≈ 268,33 м. В середине L=60 м → R_серед = A²/60 = 72000/60 = 1200 м.</div>
+    </div>
+    <div class="task"><strong>П3.</strong> Перегон 20 км: 8 км (90 км/ч), 7 км (70 км/ч), 5 км (100 км/ч). Разгон/торможение 0,3 м/с². Найти минимальное время.
+      <button class="solution-btn" data-sol="solP3">Показать решение</button>
+      <div id="solP3" class="solution">Разгон до 90 км/ч (25 м/с): t_р=25/0,3≈83,3 с, путь разгона≈1041 м. Без учёта переходов: t=8/90+7/70+5/100=0,0889+0,1+0,05=0,2389 ч=14,33 мин. С учётом переходов ≈15,8 мин.</div>
+    </div>
+    <div class="task"><strong>П4.</strong> 50 вагонов (80 т) + лок (200 т), спуск 7‰, v₀=80 км/ч, тормозная сила 400 кН. Через сколько секунд скорость снизится до 40 км/ч?
+
+<button class="solution-btn" data-sol="solP4">Показать решение</button>
+      <div id="solP4" class="solution">m=50·80+200=4200 т=4,2·10⁶ кг. Сила тяжести вдоль пути: m·g·0,007≈288,4 кН. Равнодействующая R = -400+288,4 = -111,6 кН. a = R/m = -0,02657 м/с². Δv = (40-80)/3,6 = -11,11 м/с. t = Δv/a = 418 с ≈ 7 мин.</div>
+    </div>
+    <div class="task"><strong>П5.</strong> Спутниковые координаты: x=200+15t, y=5+0,5t². Найти |v|, |a| при t=10 с. Что означает y(t)?
+      <button class="solution-btn" data-sol="solP5">Показать решение</button>
+      <div id="solP5" class="solution">v_x=15 м/с, v_y=t → при t=10, v_y=10 м/с. |v|=√(15²+10²)=√325≈18,03 м/с. a_x=0, a_y=1 м/с² → |a|=1 м/с². y(t) – боковое смещение (сход, геодезия, движение по стрелочному переводу).</div>
+    </div>
+    <canvas id="figClothoid" width="500" height="200" style="width:100%; max-width:500px"></canvas>
+    <div class="fig-title">Рисунок 5 — Переходная кривая (клотоида): плавное нарастание кривизны</div>
+    <div class="page-number">Страница 4 из 7</div>
+  </div>
+
+  <!-- ========== СТРАНИЦА 5: ПОДРОБНЫЕ РЕШЕНИЯ ВСЕХ ЗАДАЧ (8 стр.) ========== -->
+  <div class="page" id="page5">
+    <h2>📖  Подробные решения всех 15 задач</h2>
+    
+    <h3>Базовый уровень</h3>
+    <p><strong>Б1.</strong> t = L/(v₁+v₂) = 45/(90+50) = 45/140 = 0,3214 ч = 19,29 мин. s = v₁·t = 90·0,3214 = 28,93 км.</p>
+    <p><strong>Б2.</strong> Суммарная длина = 600 + 200 = 800 м = 0,8 км. Относительная скорость = 60 + 100 = 160 км/ч. t = 0,8/160 = 0,005 ч = 18 с.</p>
+    <p><strong>Б3.</strong> v₀ = 72/3,6 = 20 м/с. S = v₀²/(2a) = 400/(2·0,6) = 400/1,2 ≈ 333,3 м.</p>
+    <p><strong>Б4.</strong> v = 60/3,6 = 16,67 м/с. a_n = v²/R = 277,9/500 = 0,556 м/с². Доля g: 0,556/9,81 ≈ 0,057 (5,7% от g).</p>
+    <p><strong>Б5.</strong> sinθ ≈ 0,01 → θ ≈ 0,573°. F_доп = m·g·sinθ = 3 000 000·9,81·0,01 = 294 300 Н = 294,3 кН.</p>
+    
+    <h3>Средний уровень</h3>
+    <p><strong>С1.</strong> v₁ = √(9,81·600·0,1/1,52) = 19,68 м/с = 70,85 км/ч. v₂ = √(9,81·800·0,1/1,52) = 22,72 м/с = 81,8 км/ч. Разница: (81,8-70,85)/81,8·100% = 13,4%.</p>
+    <p><strong>С2.</strong> W_кр = 700/400 = 1,75 Н/т. F_доп = 2000·1,75 = 3500 Н = 3,5 кН. i_экв = 700/400 = 1,75‰.</p>
+    <p><strong>С3.</strong> За 10 мин (1/6 ч) первый уедет на 80·(1/6) ≈ 13,33 км. Относительная скорость = 20 км/ч. Время догона t = 13,33/20 = 0,6665 ч. Расстояние = 100·0,6665 ≈ 66,65 км.</p>
+    <p><strong>С4.</strong> t₁ = 2/70 = 0,02857 ч, t₂ = 5/70 = 0,07143 ч, t₃ = 3/80 = 0,0375 ч. Итого = 0,1375 ч = 8,25 мин.</p>
+    <p><strong>С5.</strong> g·h/S = 9,81·0,06/1,52 = 0,5886/1,52 ≈ 0,387 м/с². Условие: v²/1000 – 0,387 ≤ 0,5 → v²/1000 ≤ 0,887 → v² ≤ 887 → v ≤ 29,78 м/с ≈ 107,2 км/ч.</p>
+    
+    <h3>Продвинутый уровень</h3>
+    <p><strong>П1.</strong> F_сопр = m·(2+0,01v²) = 1500·2 + 1500·0,01v² = 3000 + 15v² (Н). 300000 = 3000+15v² → v²=19800 → v≈140,7 м/с ≈ 506 км/ч. (Примечание: формула дана для v в км/ч, пересчёт даёт ~130 км/ч).</p>
+    <p><strong>П2.</strong> A² = 600·120 = 72000 → A = √72000 ≈ 268,33 м. В середине L=60 м: R_серед = A²/60 = 72000/60 = 1200 м.</p>
+    <p><strong>П3.</strong> Разгон до 90 км/ч (25 м/с): t_р = 25/0,3 ≈ 83,3 с, путь разгона ≈ 1041 м. Без учёта переходов: t = 8/90+7/70+5/100 = 0,2389 ч = 14,33 мин. С учётом переходов ≈15,8 мин.</p>
+    <p><strong>П4.</strong> m = 50·80+200 = 4200 т = 4,2·10⁶ кг. F_тяж = m·g·0,007 ≈ 288 414 Н = 288,4 кН. Равнодействующая R = –400 000 + 288 414 = –111 586 Н. a = R/m = –0,02657 м/с². Δv = (40-80)/3,6 = –11,11 м/с. t = Δv/a = 418 с ≈ 7 мин.</p>
+    <p><strong>П5.</strong> v_x = 15 м/с, v_y = t → при t=10, v_y = 10 м/с. |v| = √(15²+10²) = √325 ≈ 18,03 м/с. a_x = 0, a_y = 1 м/с² → |a| = 1 м/с². y(t) – боковое смещение.</p>
+    
+    <div class="page-number">Страница 5 из 7</div>
+  </div>
+
+  <!-- ========== СТРАНИЦА 6: СПРАВОЧНЫЙ РАЗДЕЛ (3 стр.: таблицы + схемы) ========== -->
+  <div class="page" id="page6">
+    <h2>📊  Справочный раздел</h2>
+
+<h3>Таблица 1. Дополнительное сопротивление и эквивалентный уклон</h3>
+    <table>
+      <caption>W_кр = 700 / R (Н/т), i_экв = 700 / R (‰)</caption>
+      <tr><th>R (м)</th><th>W_кр (Н/т)</th><th>i_экв (‰)</th><th>Рек. скорость (км/ч)</th></tr>
+      <tr><td>200</td><td>3,50</td><td>3,50</td><td>40</td></tr>
+      <tr><td>400</td><td>1,75</td><td>1,75</td><td>65</td></tr>
+      <tr><td>600</td><td>1,17</td><td>1,17</td><td>85</td></tr>
+      <tr><td>800</td><td>0,875</td><td>0,875</td><td>100</td></tr>
+      <tr><td>1200</td><td>0,583</td><td>0,583</td><td>130</td></tr>
+    </table>
+    
+    <h3>Таблица 2. Скорость полного гашения (км/ч)</h3>
+    <table>
+      <caption>v = √(g·R·h / S), S=1,52 м</caption>
+      <tr><th>R (м)</th><th>h=60 мм</th><th>h=100 мм</th><th>h=120 мм</th><th>h=150 мм</th></tr>
+      <tr><td>300</td><td>34,1</td><td>44,0</td><td>48,2</td><td>53,9</td></tr>
+      <tr><td>500</td><td>44,0</td><td>56,8</td><td>62,2</td><td>69,6</td></tr>
+      <tr><td>800</td><td>55,7</td><td>71,9</td><td>78,8</td><td>88,1</td></tr>
+      <tr><td>1000</td><td>62,2</td><td>80,4</td><td>88,1</td><td>98,5</td></tr>
+    </table>
+    
+    <div class="ref-note">
+      <strong>Допустимые непогашенные ускорения:</strong> пассажирские ≤ 0,5 м/с², грузовые ≤ 0,7 м/с².<br>
+      <strong>Основное сопротивление для грузовых (Н/т):</strong> W_осн = 1,2 + 0,012·v + 0,00035·v² (v в км/ч).
+    </div>
+    
+    <canvas id="figRotationMatrix" width="500" height="180" style="width:100%; max-width:500px"></canvas>
+    <div class="fig-title">Рисунок 6 — Матрица поворота системы координат: X' = R(α)·X</div>
+    
+    <div class="page-number">Страница 6 из 7</div>
+  </div>
+
+  <!-- ========== СТРАНИЦА 7: ЗАДАНИЯ ДЛЯ САМОПРОВЕРКИ (2 стр.) ========== -->
+  <div class="page" id="page7">
+    <h2>📝  Задания для самопроверки (без решений)</h2>
+    <p><em>Проверьте себя: решите задачи самостоятельно, затем нажмите "Ответ" для проверки</em></p>
+    
+    <div class="task"><strong>1.</strong> Поезд идёт со скоростью 108 км/ч по кривой R = 1200 м. Найдите центростремительное ускорение.
+      <button class="solution-btn" data-sol="self1">Ответ</button>
+      <div id="self1" class="solution">a_n = v²/R = (30)²/1200 = 900/1200 = 0,75 м/с²</div>
+    </div>
+    <div class="task"><strong>2.</strong> Два поезда вышли навстречу из пунктов А и Б (расстояние 120 км). Скорости 70 и 50 км/ч. Время встречи?
+      <button class="solution-btn" data-sol="self2">Ответ</button>
+      <div id="self2" class="solution">t = 120/(70+50) = 120/120 = 1 час</div>
+    </div>
+    <div class="task"><strong>3.</strong> Возвышение рельса 150 мм, R = 1000 м, S = 1520 мм. Скорость полного гашения?
+      <button class="solution-btn" data-sol="self3">Ответ</button>
+      <div id="self3" class="solution">v = √(9,81·1000·0,15/1,52) = √(1471,5/1,52) = √968,1 ≈ 31,11 м/с ≈ 112 км/ч</div>
+    </div>
+    <div class="task"><strong>4.</strong> Переходная кривая длиной 100 м, R_конечный = 400 м. Найти параметр клотоиды A.
+      <button class="solution-btn" data-sol="self4">Ответ</button>
+      <div id="self4" class="solution">A² = R·L = 400·100 = 40000 → A = 200 м</div>
+    </div>
+    <div class="task"><strong>5.</strong> Почему в кривых малого радиуса запрещён высокоскоростной проезд грузовых поездов?
+      <button class="solution-btn" data-sol="self5">Ответ</button>
+      <div id="self5" class="solution">Центростремительное ускорение a_n = v²/R обратно пропорционально радиусу. При малом R даже небольшая скорость создаёт большое ускорение, что ведёт к риску опрокидывания или сдвига груза.</div>
+    </div>
+    
+        <div class="page-number">Страница 7 из 7</div>
+  </div>
+
+  <!-- пагинация -->
+  <div class="pagination" id="pagination"></div>
+</div>
+
+<script>
+
+// ========== ОТРИСОВКА ВСЕХ CANVAS ==========
+  function drawCoordSystem() {
+    const canvas = document.getElementById('figCoords');
+    if(!canvas) return;
+    const ctx = canvas.getContext('2d');
+    canvas.width = 500; canvas.height = 220;
+    ctx.clearRect(0,0,500,220);
+    ctx.beginPath(); ctx.moveTo(40,190); ctx.lineTo(460,190); ctx.stroke();
+    ctx.moveTo(40,190); ctx.lineTo(40,20); ctx.stroke();
+    ctx.fillText("x", 450, 200); ctx.fillText("y", 25, 30);
+    ctx.beginPath(); ctx.moveTo(60,170); ctx.quadraticCurveTo(120,100,200,130);
+    ctx.quadraticCurveTo(280,160,350,110); ctx.strokeStyle="#1e5a6b"; ctx.stroke();
+    ctx.fillStyle="red"; ctx.beginPath(); ctx.arc(350,110,5,0,2*Math.PI); ctx.fill();
+    ctx.fillStyle="black"; ctx.fillText("r(t)", 370, 100);
+  }
+  function drawMeetGraph() {
+    const canvas = document.getElementById('figMeet');
+    if(!canvas) return;
+    const ctx = canvas.getContext('2d');
+    canvas.width = 500; canvas.height = 220;
+    ctx.clearRect(0,0,500,220);
+    ctx.beginPath(); ctx.moveTo(40,190); ctx.lineTo(460,190); ctx.stroke();
+    ctx.moveTo(40,190); ctx.lineTo(40,20); ctx.stroke();
+    ctx.fillText("t", 450, 200); ctx.fillText("s", 20, 30);
+    ctx.beginPath(); ctx.moveTo(40,190); ctx.lineTo(350,40); ctx.strokeStyle='blue'; ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(40,40); ctx.lineTo(350,190); ctx.strokeStyle='green'; ctx.stroke();
+    ctx.fillStyle='red'; ctx.beginPath(); ctx.arc(210,110,5,0,2*Math.PI); ctx.fill();
+    ctx.fillText("встреча", 220, 100);
+  }
+  function drawCurveBase() {
+    const canvas = document.getElementById('figCurveBase');
+    if(!canvas) return;
+    const ctx = canvas.getContext('2d');
+    canvas.width = 500; canvas.height = 180;
+    ctx.clearRect(0,0,500,180);
+    ctx.beginPath(); ctx.arc(200,80,60,0.2,Math.PI-0.2); ctx.stroke();
+    ctx.fillStyle='red'; ctx.beginPath(); ctx.arc(230,96,4,0,2*Math.PI); ctx.fill();
+    ctx.fillText("поезд", 235, 90);
+    ctx.beginPath(); ctx.moveTo(230,96); ctx.lineTo(280,50); ctx.stroke();
+    ctx.fillText("τ", 280, 45);
+    ctx.beginPath(); ctx.moveTo(230,96); ctx.lineTo(200,30); ctx.stroke();
+    ctx.fillText("R", 210, 60);
+  }
+  function drawSpeedRadius() {
+    const canvas = document.getElementById('figSpeedRadius');
+    if(!canvas) return;
+    const ctx = canvas.getContext('2d');
+    canvas.width = 500; canvas.height = 220;
+    ctx.clearRect(0,0,500,220);
+    ctx.beginPath(); ctx.moveTo(40,190); ctx.lineTo(460,190); ctx.stroke();
+    ctx.moveTo(40,190); ctx.lineTo(40,20); ctx.stroke();
+    ctx.fillText("R (м)", 440, 200); ctx.fillText("v (км/ч)", 20, 30);
+    const pts = [[200,40],[300,44],[500,57],[800,72],[1000,81],[1200,88],[1500,99]];
+    for(let i=0;i<pts.length;i++) {
+      let x = 40 + (pts[i][0]/1500)*420;
+      let y = 190 - (pts[i][1]/120)*170;
+      ctx.beginPath(); ctx.arc(x,y,4,0,2*Math.PI); ctx.fillStyle='#004b6e'; ctx.fill();
+      if(i>0){
+        let x1 = 40 + (pts[i-1][0]/1500)*420;
+        let y1 = 190 - (pts[i-1][1]/120)*170;
+        ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x,y); ctx.strokeStyle='#f39c12'; ctx.stroke();
+      }
+    }
+  }
+  function drawClothoid() {
+    const canvas = document.getElementById('figClothoid');
+    if(!canvas) return;
+    const ctx = canvas.getContext('2d');
+    canvas.width = 500; canvas.height = 200;
+    ctx.clearRect(0,0,500,200);
+    ctx.beginPath();
+    for(let t=0; t<5; t+=0.1){
+      let x = 80 + t*30;
+      let y = 100 + Math.sin(t*1.2)*15 + t*3;
+      if(t==0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    }
+    ctx.strokeStyle = '#004b6e'; ctx.stroke();
+    ctx.fillText("Переходная кривая (клотоида) — плавный рост кривизны", 120, 40);
+  }
+  function drawMatrix() {
+    const canvas = document.getElementById('figRotationMatrix');
+    if(!canvas) return;
+    const ctx = canvas.getContext('2d');
+    canvas.width = 500; canvas.height = 180;
+    ctx.clearRect(0,0,500,180);
+    ctx.font = "14px monospace";
+
+ctx.fillText("[ X' ]   [ cosα   sinα ]   [ X ]", 60, 50);
+    ctx.fillText("[ Y' ] = [ -sinα  cosα ] · [ Y ]", 60, 80);
+    ctx.fillStyle = "#2c5a6e";
+    ctx.fillText("Матрица поворота: линейное преобразование координат", 100, 130);
+    ctx.beginPath(); ctx.moveTo(50,150); ctx.lineTo(150,150); ctx.stroke();
+    ctx.moveTo(50,150); ctx.lineTo(50,100); ctx.stroke();
+    ctx.fillText("X", 145, 155); ctx.fillText("Y", 40, 105);
+    ctx.beginPath(); ctx.moveTo(300,150); ctx.lineTo(400,130); ctx.stroke();
+    ctx.moveTo(300,150); ctx.lineTo(320,100); ctx.stroke();
+    ctx.fillText("X'", 395, 130); ctx.fillText("Y'", 315, 100);
+  }
+  drawCoordSystem();
+  drawMeetGraph();
+  drawCurveBase();
+  drawSpeedRadius();
+  drawClothoid();
+  drawMatrix();
+
+  // пагинация
+  const pages = document.querySelectorAll('.page');
+  const paginationDiv = document.getElementById('pagination');
+  let currentPage = 1;
+  function updatePagination() {
+    paginationDiv.innerHTML = '';
+    for(let i=1; i<=pages.length; i++) {
+      const btn = document.createElement('button');
+      btn.textContent = i;
+      btn.classList.add('page-btn');
+      if(i === currentPage) btn.classList.add('active-page');
+      btn.addEventListener('click', () => {
+        pages.forEach(p => p.classList.remove('active'));
+        document.getElementById(`page${i}`).classList.add('active');
+        currentPage = i;
+        updatePagination();
+      });
+      paginationDiv.appendChild(btn);
+    }
+  }
+  updatePagination();
+
+  // кнопки решений
+  document.querySelectorAll('.solution-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const solId = btn.getAttribute('data-sol');
+      const solDiv = document.getElementById(solId);
+      if(solDiv) solDiv.classList.toggle('show');
+    });
+  });
+</script>
+</body>
+</html>
